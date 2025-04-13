@@ -1,37 +1,9 @@
 #!/bin/bash
 
-# Void Linux Retro Fluxbox Desktop Kurulumu
+sudo xbps-install -Sy xorg xinit xterm fluxbox tint2 conky feh rofi neofetch cmatrix dejavu-fonts-ttf
 
-echo "[+] Gerekli paketler yükleniyor..."
+echo "exec fluxbox" > ~/.xinitrc
 
-sudo xbps-install -Sy \
-  xorg \
-  xinit \
-  xterm \
-  fluxbox \
-  rofi \
-  tint2 \
-  conky \
-  feh \
-  neofetch \
-  fonts-ttf-dejavu \
-  cmatrix \
-  xsetroot
-
-# .xinitrc oluşturuluyor
-echo 'exec startfluxbox' > ~/.xinitrc
-
-# Fluxbox config
-mkdir -p ~/.fluxbox
-cp -r /etc/X11/fluxbox/init ~/.fluxbox/
-cp -r /etc/X11/fluxbox/keys ~/.fluxbox/
-cp -r /etc/X11/fluxbox/menu ~/.fluxbox/
-
-# Tint2 varsayılan ayarı
-mkdir -p ~/.config/tint2
-cp /etc/xdg/tint2/tint2rc ~/.config/tint2/
-
-# Conky ayarı
 mkdir -p ~/.config/conky
 cat <<EOF > ~/.config/conky/conky.conf
 conky.config = {
@@ -55,12 +27,8 @@ Uptime: \$uptime
 ]];
 EOF
 
-# Arkaplan (siyaha boyar)
-xsetroot -solid "#000000"
-
-# .bashrc'ye neofetch ekle
 if ! grep -q "neofetch" ~/.bashrc; then
   echo "neofetch" >> ~/.bashrc
 fi
 
-echo "[✓] Kurulum tamamlandı. Reboot at, sonra login ol ve 'startx' yaz."
+echo "[✓] Her şey tamam. Sistemi rebootla, sonra login olunca startx yaz."
