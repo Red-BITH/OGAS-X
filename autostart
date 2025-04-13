@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# Arka plan resmi (feh)
+feh --bg-scale /path/to/wallpaper.jpg &
+
+# Panel (tint2)
+tint2 &
+
+# Compositor (picom)
+picom -b --experimental-backends &
+
+# Bildirim sistemi (dunst)
+dunst &
+
+# Sistem bilgisi (conky)
+conky -c ~/.config/conky/conky.conf &
+
+# Klavye düzeni (Türkçe F için)
+setxkbmap tr &
+
+# Ağ yöneticisi (nm-applet)
+nm-applet &
+
+# Güç yönetimi (xfce4-power-manager)
+xfce4-power-manager &
+
+# Polkit yetkilendirmesi (lxpolkit)
+lxpolkit &
