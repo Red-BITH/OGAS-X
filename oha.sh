@@ -1,68 +1,41 @@
 #!/bin/bash
 
-echo ">> Retro Fluxbox Setup başlıyor..."
+echo "[*] Retro95 setup başlıyor..."
 
-# Paketleri kur
-sudo xbps-install -Sy xorg xinit fluxbox feh tint2 conky rofi neofetch cmatrix toilet
+# Gereken paketleri yükle
+sudo xbps-install -Sy icewm rox-filer feh lxappearance xorg xinit menu
 
-# X başlangıcı ayarla
-echo "exec fluxbox" > ~/.xinitrc
+# X başlatıcı ayarı
+echo "exec icewm-session" > ~/.xinitrc
 
-# Wallpaper klasörü oluştur
+# Arka plan resmi
 mkdir -p ~/Pictures/wallpapers
-curl -L -o ~/Pictures/wallpapers/retro.jpg https://i.imgur.com/wjWkyoL.jpg
+curl -L -o ~/Pictures/wallpapers/retro95.jpg https://i.imgur.com/wjWkyoL.jpg
 
-# Fluxbox startup dosyası
-mkdir -p ~/.fluxbox
-cat <<EOF > ~/.fluxbox/startup
+# Başlangıçta wallpaper ayarı için autostart dosyası
+mkdir -p ~/.icewm
+cat <<EOF > ~/.icewm/startup
 #!/bin/sh
-feh --bg-scale ~/Pictures/wallpapers/retro.jpg &
-tint2 &
-conky &
-exec fluxbox
+feh --bg-scale ~/Pictures/wallpapers/retro95.jpg &
+rox --pinboard=ROX-Filer &
 EOF
-chmod +x ~/.fluxbox/startup
+chmod +x ~/.icewm/startup
 
-# Conky config
-mkdir -p ~/.config/conky
-cat <<EOF > ~/.config/conky/conky.conf
-conky.config = {
-    alignment = 'top_right',
-    background = true,
-    update_interval = 1,
-    double_buffer = true,
-    own_window = true,
-    own_window_type = 'desktop',
-    own_window_argb_visual = true,
-    minimum_width = 200,
-    minimum_height = 5,
-    use_xft = true,
-    font = 'DejaVu Sans Mono:size=9',
-    gap_x = 20,
-    gap_y = 50,
-};
-conky.text = [[
-\\\${time %H:%M:%S}
-CPU: \\\${cpu}%
-RAM: \\\${mem} / \\\${memmax}
-Uptime: \\\${uptime}
-]];
+# Menü güncelleme
+sudo update-menus
+cp /etc/X11/icewm/system.menu ~/.icewm/menu
+
+# Tema önerisi
+cat <<EOF > ~/.icewm/preferences
+Theme="win95"
 EOF
 
-# ASCII şov .bashrc içine
-if ! grep -q "ascii_show" ~/.bashrc; then
-cat <<'EOF' >> ~/.bashrc
+# Win95 teması indir
+mkdir -p ~/.icewm/themes
+cd ~/.icewm/themes
+git clone https://github.com/bbidulock/icewm-extra-themes.git
+mv icewm-extra-themes/win95 ~/.icewm/themes/
+rm -rf icewm-extra-themes
 
-ascii_show() {
-  clear
-  toilet -f mono12 -F metal "OGAS-X"
-  neofetch
-  cmatrix -b -C green -u 3
-}
-ascii_show
-EOF
-fi
+echo "[✔] Retro95 hazır. Sistemi yeniden başlat, ardından 'startx' de."
 
-echo ""
-echo "🎉 Her şey hazır. Sistemi yeniden başlat, sonra terminalden startx yaz."
-echo "🚀 Fluxbox açılacak, wallpaper + tint2 + conky + ASCII şov da yanında!"
